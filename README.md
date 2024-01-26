@@ -1,6 +1,4 @@
-Certainly! A README file serves as documentation and a quick guide for users and contributors to understand your dark web crawler repository. Below is a sample README for your dark web crawler repository:
 
----
 
 # Dark Web Crawler
 
