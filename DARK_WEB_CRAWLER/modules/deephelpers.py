@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from subprocess import PIPE, run
 import os, csv, re, sys, json, subprocess, socks, httplib2
 import urllib.request as request
@@ -13,22 +14,59 @@ def onionStatus(url):
 		return 404
 
 #https://howtodoinjava.com/python/httplib2-http-get-post-requests/
+
+	
+
+# ... (other imports and functions remain unchanged)
+
 def onionHTML(url):
-	try:
-		proxy = httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host='localhost', proxy_port=9050)
-		http = httplib2.Http(proxy_info=proxy, timeout=30)
-		content = http.request(url, headers={'Connection': 'close', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'})[1]
-		html = str(content,'utf-8').replace('\t',' ').replace('\n',' ').replace('\r',' ').replace('\"','')
-		return html
-	except:
-		return "None"
+    try:
+        proxy = httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host='localhost', proxy_port=9050)
+        http = httplib2.Http(proxy_info=proxy, timeout=30)
+        response, content = http.request(url, headers={'Connection': 'close', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'})
+
+        if response.status == 200:
+            # Use Beautiful Soup to parse the HTML content
+            soup = BeautifulSoup(content, 'html.parser')
+
+            # Return the BeautifulSoup object
+            return soup
+        else:
+            print(f"Error: Unable to fetch content for {url}. Status code: {response.status}")
+            return None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+# ... (remaining functions remain unchanged)
+
+# Example of using the modified onionHTML function
+def example_usage():
+    url = "https://example.onion"
+    html_soup = onionHTML(url)
+
+    if html_soup:
+        # Extracting specific information using Beautiful Soup
+        # For example, print all the links in the HTML
+        for link in html_soup.find_all('a'):
+            print(link.get('href'))
+
+if __name__ == "__main__":
+    # You can add your main program logic here
+    titlePrinter()
+    rootcheck()
+
+    # Example usage of the modified onionHTML function
+    example_usage()
+
+	
 
 def onionExtractor(html,inputUrl):
         results,onions = [],[]
         regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.onion\/?[-a-zA-Z0-9@:%._\/+~#=]{1,256}"
         inputRegex = r"\"" + inputUrl + "?[-a-zA-Z0-9@:%._\/+~#=]{1,256}"
-        inputMatches = re.finditer(inputRegex, html, re.MULTILINE)
-        matches = re.finditer(regex, html, re.MULTILINE)
+        inputMatches = re.finditer(inputRegex, str(html), re.MULTILINE)
+        matches = re.finditer(regex, str(html), re.MULTILINE)
         for matchNum, match in enumerate(matches, start=1):
                 url = (match.group())
                 results.append(url)
@@ -178,7 +216,7 @@ def titlePrinter():
 	| 	screen -r deepminer to reattach to the screen		       |
 	| To exit the program press Ctrl+Shift+\	
 	|
-	By- Kartikeya srivastava.
+    BY -Kartikeya srivastava.
 	------------------------------------------------------------------------
 
 
