@@ -29,8 +29,8 @@ while len(inputList) > 0:
 				print("Returned TraceError. Moving to next URL")
 			else:
 				res = []
-				onions = onionExtractor(html,url)
-				atag = aTag(url,html)
+				onions = onionExtractor(str(html),url)
+				atag = aTag(url,str(html))
 				allonions = onions + atag
 				onionResults = list(set(allonions))
 				for site in onionResults:
