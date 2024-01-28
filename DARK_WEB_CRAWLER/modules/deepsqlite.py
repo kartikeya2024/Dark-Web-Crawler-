@@ -31,11 +31,12 @@ def createTables(con):
 	"""
 	cur.execute(deepconnections)
 
-def addDeepData(url,directory,html,con):
-	cur = con.cursor()
-	addData = "INSERT OR REPLACE INTO Deepdata (URL, Directory, HTML) VALUES (?, ?, ?)"
-	cur.execute(addData,(url, directory, html))
-	con.commit()
+def addDeepData(url, directory, html, conn):
+    addData = '''INSERT INTO deepdata(url, directory, html) VALUES(?,?,?)'''
+    cur = conn.cursor()
+    cur.execute(addData, (url, directory, str(html)))  # Convert html to string
+    conn.commit()
+    return cur.lastrowid
 
 def addDeepConnections(url, urlDir, site, siteDir,con):
 	cur = con.cursor()
